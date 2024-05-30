@@ -37,12 +37,11 @@ function createThemeProject(name) {
      * Upon clone success out success message
      * */
 
-    console.log('');
-    console.log(chalk.bold.green('Theme initlized succesfully!\n'));
+    console.log(chalk.bold.green('\nTheme initlized succesfully!\n'));
     console.log(chalk.white('Start building amazing e-commerce experience.\n'));
     console.log(chalk.white('To start the app:'));
     console.log('');
-    console.log(chalk.bold.green('taojaa') + ' ' + chalk.white('theme dev --store <name>'));
+    console.log(chalk.bold.blue('taojaa') + ' ' + chalk.white('run dev --store <name>'));
 }
 
 

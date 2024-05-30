@@ -5,9 +5,8 @@ const { createProject } = require('./actions/new');
 const actions = require('./actions/actions');
 const auth = require('./actions/auth');
 
-process.env['SERVER_URL'] = 'http://localhost:8002';
-process.env['SERVER_HOSTNAME'] = 'localhost';
-process.env['SERVER_PORT'] = 8002;
+process.env['AUTH_SERVER_URL'] = 'https://auth-service-dev.taojaa.com';
+process.env['THEME_SERVER_URL'] = 'https://themes-service-dev.taojaa.com';
 
 program.command('new <type> <name>')
     .description('Initialize new project')

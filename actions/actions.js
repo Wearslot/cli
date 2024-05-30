@@ -1,20 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+const chalk = require('chalk');
 const formData = require('form-data');
 const { zipDirectory } = require('../store-front-app/helpers');
-const chalk = require('chalk');
-const { copyFile } = require('../helpers');
+const { copyFile, getDeveloperCredentials } = require('../helpers');
 
 
 const actions = (action, options) => {
 
-    var credentials = {};
-    var credentials_file = fs.readFileSync(path.join(__dirname, '.credentials'), 'utf8');
-    credentials_file.split('\n').map(keyvalue => {
-        keyvalue = keyvalue.split('=');
-        credentials[keyvalue[0]] = keyvalue[1];
-    });
+    const credentials = getDeveloperCredentials();
 
     switch (action) {
         case 'push':
@@ -66,11 +61,11 @@ const pushToStore = async ({ store, version, name }, credentials) => {
     form.append('theme_file', fileStream);
 
     try {
-        const response = await axios.post(`${process.env.SERVER_URL}/api/v1/push/theme`, form, {
+        const response = await axios.post(`${process.env.THEME_SERVER_URL}/api/v1/push/theme`, form, {
             headers: {
                 'Accept': 'application/json',
-                ...form.getHeaders(),
                 ...credentials,
+                ...form.getHeaders(),
             },
         });
 
