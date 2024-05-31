@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const chalk = require('chalk');
 const { getDeveloperCredentials } = require('../helpers');
 const { default: axios } = require('axios');
