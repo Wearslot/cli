@@ -1,22 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 
-async function copyFile(src, dest) {
-    const stat = await fs.stat(src);
+async function copyThemeFile(src, dest) {
+    const stat = fs.statSync(src);
 
     if (stat.isDirectory()) {
-        await fs.mkdir(dest, { recursive: true });
-        const entries = await fs.readdir(src, { withFileTypes: true });
+        fs.mkdirSync(dest, { recursive: true });
+        const entries = await fs.readdirSync(src, { withFileTypes: true });
         await Promise.all(entries.map(entry => {
             const srcPath = path.join(src, entry.name);
             const destPath = path.join(dest, entry.name);
             if (srcPath.indexOf('.git') > -1) {
                 return;
             }
-            return copyFile(srcPath, destPath);
+            return copyThemeFile(srcPath, destPath);
         }));
     } else {
-        await fs.copyFile(src, dest);
+        fs.copyFileSync(src, dest);
     }
 }
 
@@ -37,6 +37,6 @@ const getDeveloperCredentials = () => {
 }
 
 module.exports = {
-    copyFile,
+    copyThemeFile,
     getDeveloperCredentials
 }

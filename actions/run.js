@@ -3,6 +3,10 @@ const { getDeveloperCredentials } = require('../helpers');
 const { default: axios } = require('axios');
 
 const runProject = async (dev, { store, port }) => {
+    var wkdir = process.cwd();
+    if (!fs.existsSync(path.join(wkdir, 'components'))) {
+        return console.log(chalk.red.bold('Not a valid taojaa theme directory'));
+    }
 
     const PORT = port !== undefined ? port : 2157;
 

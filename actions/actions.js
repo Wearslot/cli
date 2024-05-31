@@ -4,7 +4,7 @@ const axios = require('axios');
 const chalk = require('chalk');
 const formData = require('form-data');
 const { zipDirectory } = require('../store-front-app/helpers');
-const { copyFile, getDeveloperCredentials } = require('../helpers');
+const { copyThemeFile, getDeveloperCredentials } = require('../helpers');
 
 
 const actions = (action, options) => {
@@ -31,14 +31,14 @@ const pushToStore = async ({ store, version, name }, credentials) => {
     var folder_name = folder_paths[folder_paths.length - 1];
 
     if (!fs.existsSync(path.join(wkdir, 'components'))) {
-        return console.log(chalk.red.bold('Directory is not a valid taojaa theme directory'));
+        return console.log(chalk.red.bold('Not a valid taojaa theme directory'));
     }
 
     console.log(chalk.white.bold('Bundling..................'));
 
     const fullpath = path.join(__dirname, `${folder_name}`);
     // Copy files from original folder 
-    await copyFile(wkdir, fullpath)
+    await copyThemeFile(wkdir, fullpath)
     // Zip the copied folder
     await zipDirectory(fullpath, `${fullpath}.zip`);
     // Delete the copied folder
@@ -74,6 +74,7 @@ const pushToStore = async ({ store, version, name }, credentials) => {
         }
 
     } catch (error) {
+        console.log(error);
         if (error.response) {
             if (error.response.status === 400) {
                 var message = error.response.data.message;
