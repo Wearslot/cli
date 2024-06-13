@@ -3,7 +3,7 @@ const path = require('path');
 const axios = require('axios');
 const chalk = require('chalk');
 const formData = require('form-data');
-const { zipDirectory } = require('../store-front-app/helpers');
+const { zipDirectory } = require('@Wearslot/store-front-app/helpers');
 const { copyThemeFile, getDeveloperCredentials } = require('../helpers');
 
 
@@ -74,7 +74,6 @@ const pushToStore = async ({ store, version, name }, credentials) => {
         }
 
     } catch (error) {
-        console.log(error);
         if (error.response) {
             if (error.response.status === 400) {
                 var message = error.response.data.message;
@@ -84,7 +83,7 @@ const pushToStore = async ({ store, version, name }, credentials) => {
                 console.log(chalk.red.bold(message));
             }
         } else {
-            console.log(chalk.red.bold("Push failed"));
+            console.log(chalk.red.bold(error));
         }
     } finally {
         fs.unlinkSync(`${fullpath}.zip`)
@@ -93,8 +92,25 @@ const pushToStore = async ({ store, version, name }, credentials) => {
 
 }
 
-const pullFromStore = ({ store }) => {
+const pullFromStore = ({ store }, credentials) => {
+    try {
 
+        const form = new formData();
+        form.append('slug', folder_name);
+        form.append('store', store || '');
+
+        const response = axios.post(`${process.env.THEME_SERVER_URL}/api/v1/pull/theme`, form, {
+            headers: {
+                'Accept': 'application/json',
+                ...credentials,
+                ...form.getHeaders(),
+            },
+        });
+
+
+    } catch (error) {
+
+    }
 }
 
 module.exports = actions

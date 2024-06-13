@@ -5,10 +5,11 @@ const { createProject } = require('./actions/new');
 const actions = require('./actions/actions');
 const auth = require('./actions/auth');
 
-process.env['AUTH_SERVER_URL'] = 'https://auth-service-dev.taojaa.com';
-process.env['THEME_SERVER_URL'] = 'https://themes-service-dev.taojaa.com';
+process.env['AUTH_SERVER_URL'] = 'https://auth-service-prod.taojaa.com';
+process.env['THEME_SERVER_URL'] = 'https://themes-service-prod.taojaa.com';
 
-program.command('new <type> <name>')
+program
+    .command('new <type> <name>')
     .description('Initialize new project')
     .action(createProject);
 
