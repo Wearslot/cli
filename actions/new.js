@@ -18,7 +18,7 @@ const createProject = (type, name) => {
 
 function createThemeProject(name) {
 
-    console.log(chalk.green('Creating new theme using affluent...'));
+    console.log(chalk.blue.bold('Creating new theme using affluent...'));
 
     const directory = process.cwd();
     /**

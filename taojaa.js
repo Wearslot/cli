@@ -4,6 +4,7 @@ const { runProject } = require('./actions/run');
 const { createProject } = require('./actions/new');
 const actions = require('./actions/actions');
 const auth = require('./actions/auth');
+const { clone } = require('./actions/clone');
 
 process.env['AUTH_SERVER_URL'] = 'https://auth-service-prod.taojaa.com';
 process.env['THEME_SERVER_URL'] = 'https://themes-service-prod.taojaa.com';
@@ -30,6 +31,13 @@ program
     .option('--version <version>', 'To specify a new version release.')
     .action(actions)
 
+program
+    .command('clone <type>')
+    .description('Clone exitings themes, app and plugins.')
+    .option('--store <name>', 'The name of the development store.')
+    .option('--name <theme>', 'The name of the theme.')
+    .option('--version <version>', 'To target a particular version.')
+    .action(clone)
 
 program
     .command('authenticate')

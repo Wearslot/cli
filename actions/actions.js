@@ -5,6 +5,7 @@ const chalk = require('chalk');
 const formData = require('form-data');
 const { zipDirectory } = require('@Wearslot/store-front-app/helpers');
 const { copyThemeFile, getDeveloperCredentials } = require('../helpers');
+const { cloneTheme } = require('./clone');
 
 
 const actions = (action, options) => {
@@ -17,24 +18,56 @@ const actions = (action, options) => {
             break;
 
         case 'pull':
-            pullFromStore(options);
+            cloneTheme(options, credentials, true);
             break;
 
         default:
+            console.log(chalk.blue.bold(`Unindefined action or command ${action}`));
             break;
     }
 }
 
-const pushToStore = async ({ store, version, name }, credentials) => {
+const pushToStore = async (options, credentials) => {
     var wkdir = process.cwd();
     var folder_paths = wkdir.split('\\');
     var folder_name = folder_paths[folder_paths.length - 1];
 
     if (!fs.existsSync(path.join(wkdir, 'components'))) {
-        return console.log(chalk.red.bold('Not a valid taojaa theme directory'));
+        return console.log(chalk.red.bold('Not a valid theme directory'));
     }
 
-    console.log(chalk.white.bold('Bundling..................'));
+    let store, version, name = undefined;
+
+    if (fs.existsSync(path.join(wkdir, 'theme.json'))) {
+        const theme = JSON.parse(fs.readFileSync(path.join(wkdir, 'theme.json'), 'utf8'));
+        store = theme.store; version = theme.version; name = theme.name;
+    }
+
+    if (options.store !== undefined) {
+        store = options.store;
+    }
+
+    if (options.version !== undefined) {
+        version = options.version;
+    }
+
+    if (options.name !== undefined) {
+        name = options.name;
+    }
+
+    if (!store) {
+        return console.log(chalk.red.bold('Store not specified'));
+    }
+
+    if (!name) {
+        return console.log(chalk.red.bold('Theme name is required'));
+    }
+
+    if (store.indexOf('.') > -1) {
+        store = store.split('.')[0];
+    }
+
+    console.log(chalk.blue.bold('Bundling..................'));
 
     const fullpath = path.join(__dirname, `${folder_name}`);
     // Copy files from original folder 
@@ -48,16 +81,14 @@ const pushToStore = async ({ store, version, name }, credentials) => {
     console.log(chalk.green.bold('Theme bundled successfully.'));
 
     // Upload zipped folder
-    console.log(chalk.white.bold('Pushing theme to theme store...'));
-
+    console.log(chalk.blue.bold('Pushing theme to store...'));
 
     const fileStream = fs.createReadStream(`${fullpath}.zip`);
 
     const form = new formData();
-    form.append('store', store || '');
-    form.append('name', name || '');
-    form.append('slug', folder_name);
-    form.append('version', version || 'development');
+    form.append('store', store);
+    form.append('name', name);
+    form.append('version', version || '1.0.0');
     form.append('theme_file', fileStream);
 
     try {
@@ -87,29 +118,6 @@ const pushToStore = async ({ store, version, name }, credentials) => {
         }
     } finally {
         fs.unlinkSync(`${fullpath}.zip`)
-    }
-
-
-}
-
-const pullFromStore = ({ store }, credentials) => {
-    try {
-
-        const form = new formData();
-        form.append('slug', folder_name);
-        form.append('store', store || '');
-
-        const response = axios.post(`${process.env.THEME_SERVER_URL}/api/v1/pull/theme`, form, {
-            headers: {
-                'Accept': 'application/json',
-                ...credentials,
-                ...form.getHeaders(),
-            },
-        });
-
-
-    } catch (error) {
-
     }
 }
 

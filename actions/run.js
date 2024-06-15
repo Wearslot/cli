@@ -10,11 +10,19 @@ const runProject = async (dev, { store, port }) => {
         return console.log(chalk.red.bold('Not a valid taojaa theme directory'));
     }
 
+    var store_url;
+
+    if (fs.existsSync(path.join(wkdir, 'theme.json'))) {
+        const theme = JSON.parse(fs.readFileSync(path.join(wkdir, 'theme.json'), 'utf8'));
+        store_url = theme.store;
+    } else {
+        store_url = store + '.taojaa.shop'
+    }
+
     const PORT = port !== undefined ? port : 2157;
 
     process.env["APP_ENV"] = "cli";
-    process.env["STORE_NAME"] = store;
-    process.env["STORE_DOMAIN"] = store + '.localhost';
+    process.env["STORE_DOMAIN"] = store_url;
     process.env["THEME_PORT"] = PORT;
     process.env["THEME_DIR"] = process.cwd();
     process.env["THEMES_ENDPOINT"] = 'https://themes-service-prod.taojaa.com/api/v1';
@@ -25,17 +33,17 @@ const runProject = async (dev, { store, port }) => {
     process.env['MAILTRAP_USERNAME'] = 'api';
     process.env['MAILTRAP_PASSWORD'] = '67dc695fd9358c1b3a336b17548eaac0';
 
-    if (store === undefined) {
+    if (store_url === undefined) {
         return console.log("Error, kindly provide development store name");
     }
 
     try {
         const credentials = getDeveloperCredentials();
         if (!credentials) {
-            return console.log(chalk.bold.red('Authencation reuired!'));
+            return console.log(chalk.bold.red('Authencation required!'));
         }
 
-        const response = await axios.post(`${process.env.AUTH_SERVER_URL}/api/v1/validate/store/access`, { store }, {
+        await axios.post(`${process.env.AUTH_SERVER_URL}/api/v1/validate/store/access`, { store }, {
             headers: {
                 'Accept': 'application/json',
                 ...credentials
@@ -58,7 +66,6 @@ const runProject = async (dev, { store, port }) => {
     }
 
 
-
     const app = require('@Wearslot/store-front-app');
 
     app.listen(process.env.THEME_PORT, () => {
@@ -66,9 +73,9 @@ const runProject = async (dev, { store, port }) => {
         console.log('');
         console.log(chalk.white('To preview on your development store:'));
         console.log('');
-        console.log(chalk.blue.bold('taojaa') + ' theme push --store <store-name>');
+        console.log(chalk.blue.bold('taojaa') + ' theme push [--store <store-name>]');
         console.log('');
-        console.log(chalk.green.bold(`Access your develoment store @ https://${process.env.STORE_NAME}.taojaa.shop`));
+        console.log(chalk.green.bold(`Access your develoment store @ https://${store_url}`));
     })
 }
 
