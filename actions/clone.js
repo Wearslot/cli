@@ -9,7 +9,7 @@ const clone = (type, options) => {
 
     switch (type) {
         case 'theme':
-            cloneTheme(options, credentials);
+            downloadTheme(options, credentials);
             break;
 
         case 'app':
@@ -23,14 +23,16 @@ const clone = (type, options) => {
 }
 
 
-const cloneTheme = async ({ store, name, version }, credentials, pull = false) => {
+const downloadTheme = async (options, credentials, pull = false) => {
 
     var wkdir = process.cwd();
 
+    var data = options;
+    data.version = options.version || '1.0.0';
 
     if (fs.existsSync(path.join(wkdir, 'theme.json')) && pull) {
         const theme = JSON.parse(fs.readFileSync(path.join(wkdir, 'theme.json'), 'utf8'));
-        store = theme.store; version = theme.version; name = theme.name;
+        data = theme;
     }
 
     if (pull) {
@@ -39,21 +41,23 @@ const cloneTheme = async ({ store, name, version }, credentials, pull = false) =
         }
     }
 
+    if (!data.store) {
+        return console.log(chalk.red.bold('Store must be specified'));
+    }
+
+    if (!data.name) {
+        return console.log(chalk.red.bold('Theme name is required'));
+    }
+
+    if (data.store.indexOf('.') > -1) {
+        data.store = data.store.split('.')[0];
+    }
+
+    pull
+        ? console.log(chalk.blue.bold(`Pulling ${data.name} from ${data.store} ....`))
+        : console.log(chalk.blue.bold(`Cloning ${data.name} from ${data.store} ....`));
+
     try {
-
-        if (!store) {
-            return console.log(chalk.red.bold('Store must be specified'));
-        }
-
-        if (!name) {
-            return console.log(chalk.red.bold('Theme name is required'));
-        }
-
-        if (store.indexOf('.') > -1) {
-            store = store.split('.')[0];
-        }
-
-        console.log(chalk.blue.bold(`Cloning ${name} from ${store} ....`));
 
         const options = {
             method: 'POST',
@@ -62,20 +66,22 @@ const cloneTheme = async ({ store, name, version }, credentials, pull = false) =
                 'Accept': 'application/json',
                 ...credentials
             },
-            body: JSON.stringify({
-                store, name, version: version || '1.0.0'
-            })
+            body: JSON.stringify(data)
         }
+
+        var finalDir = pull ? `${wkdir}` : `${wkdir}/${data.name.replaceAll(' ', '-').toLowerCase()}/`;
 
         const outputPath = path.join(__dirname, 'theme.zip');
         await downloadZipFile(`${process.env.THEME_SERVER_URL}/api/v1/download/theme`, outputPath, options)
-        await unzipDirectory(outputPath, `${wkdir}/${name}/`)
+        await unzipDirectory(outputPath, finalDir)
 
         if (fs.existsSync(outputPath)) {
             fs.unlinkSync(outputPath);
         }
 
-        return console.log(chalk.green.bold('Theme cloned successfully'));
+        return pull
+        ? console.log(chalk.green.bold('Theme updates pulled successfully'))
+        : console.log(chalk.green.bold('Theme cloned successfully'));
 
     } catch (error) {
         if (error.response) {
@@ -90,4 +96,4 @@ const cloneTheme = async ({ store, name, version }, credentials, pull = false) =
 }
 
 
-module.exports = { clone, cloneTheme };
+module.exports = { clone, downloadTheme };

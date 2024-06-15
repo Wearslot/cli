@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const formData = require('form-data');
 const { zipDirectory } = require('@Wearslot/store-front-app/helpers');
 const { copyThemeFile, getDeveloperCredentials } = require('../helpers');
-const { cloneTheme } = require('./clone');
+const { downloadTheme } = require('./clone');
 
 
 const actions = (action, options) => {
@@ -18,7 +18,7 @@ const actions = (action, options) => {
             break;
 
         case 'pull':
-            cloneTheme(options, credentials, true);
+            downloadTheme(options, credentials, true);
             break;
 
         default:
@@ -32,39 +32,28 @@ const pushToStore = async (options, credentials) => {
     var folder_paths = wkdir.split('\\');
     var folder_name = folder_paths[folder_paths.length - 1];
 
+    var data = options;
+    data.version = options.version || '1.0.0';
+
     if (!fs.existsSync(path.join(wkdir, 'components'))) {
         return console.log(chalk.red.bold('Not a valid theme directory'));
     }
 
-    let store, version, name = undefined;
-
     if (fs.existsSync(path.join(wkdir, 'theme.json'))) {
-        const theme = JSON.parse(fs.readFileSync(path.join(wkdir, 'theme.json'), 'utf8'));
-        store = theme.store; version = theme.version; name = theme.name;
+        var theme = JSON.parse(fs.readFileSync(path.join(wkdir, 'theme.json'), 'utf8'));
+        data = theme;
     }
 
-    if (options.store !== undefined) {
-        store = options.store;
+    if (!data.store) {
+        return console.log(chalk.red.bold('Store must be specified'));
     }
 
-    if (options.version !== undefined) {
-        version = options.version;
-    }
-
-    if (options.name !== undefined) {
-        name = options.name;
-    }
-
-    if (!store) {
-        return console.log(chalk.red.bold('Store not specified'));
-    }
-
-    if (!name) {
+    if (!data.name) {
         return console.log(chalk.red.bold('Theme name is required'));
     }
 
-    if (store.indexOf('.') > -1) {
-        store = store.split('.')[0];
+    if (data.store.indexOf('.') > -1) {
+        data.store = data.store.split('.')[0];
     }
 
     console.log(chalk.blue.bold('Bundling..................'));
@@ -86,9 +75,12 @@ const pushToStore = async (options, credentials) => {
     const fileStream = fs.createReadStream(`${fullpath}.zip`);
 
     const form = new formData();
-    form.append('store', store);
-    form.append('name', name);
-    form.append('version', version || '1.0.0');
+    for (const key in data) {
+        if (Object.hasOwnProperty.call(data, key)) {
+            form.append(key, data[key]);
+
+        }
+    }
     form.append('theme_file', fileStream);
 
     try {
@@ -101,6 +93,13 @@ const pushToStore = async (options, credentials) => {
         });
 
         if (response.data.status === 'success') {
+            if (theme !== undefined) {
+                if (theme.id === undefined) {
+                    theme.id = response.data.theme.id;
+
+                    fs.writeFileSync(path.join(wkdir, 'theme.json'), JSON.stringify(theme))
+                }
+            }
             console.log(chalk.green.bold('Theme pushed successfully'));
         }
 
