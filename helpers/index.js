@@ -23,11 +23,11 @@ async function copyThemeFile(src, dest) {
 
 const getDeveloperCredentials = () => {
 
-    if (!fs.existsSync('../actions/.credentials')) return false;
+    if (!fs.existsSync(path.join(__dirname, '/../actions/.credentials'))) return false;
 
     var credentials = {};
 
-    var credentials_file = fs.readFileSync('../actions/.credentials', 'utf8');
+    var credentials_file = fs.readFileSync(path.join(__dirname, '/../actions/.credentials'), 'utf8');
     credentials_file.split('\n').map(keyvalue => {
         keyvalue = keyvalue.split('=');
         credentials[keyvalue[0]] = keyvalue[1];

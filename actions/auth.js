@@ -23,7 +23,7 @@ const auth = async ({ accesstoken, secretkey }) => {
 
         if (response.data.success) {
             const path = require('path');
-            fs.writeFileSync('.credentials', `ACCESS_TOKEN=${accessToken}\nSECRET_KEY=${secretKey}`);
+            fs.writeFileSync(path.join(__dirname, '.credentials'), `ACCESS_TOKEN=${accessToken}\nSECRET_KEY=${secretKey}`);
             return console.log(chalk.bold.green(response.data.message));
         }
 
