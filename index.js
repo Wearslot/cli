@@ -6,6 +6,7 @@ const actions = require('./actions/actions');
 const auth = require('./actions/auth');
 const { clone } = require('./actions/clone');
 
+process.env["APP_ENV"] = "cli";
 process.env['AUTH_SERVER_URL'] = 'https://auth-service-prod.taojaa.com';
 process.env['THEME_SERVER_URL'] = 'https://themes-service-prod.taojaa.com';
 

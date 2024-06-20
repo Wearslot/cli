@@ -21,7 +21,6 @@ const runProject = async (dev, { store, port }) => {
 
     const PORT = port !== undefined ? port : 2157;
 
-    process.env["APP_ENV"] = "cli";
     process.env["STORE_DOMAIN"] = store_url;
     process.env["THEME_PORT"] = PORT;
     process.env["THEME_DIR"] = process.cwd();
