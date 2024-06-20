@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const chalk = require("chalk");
 const { getDeveloperCredentials } = require("../helpers");
-const { downloadZipFile, unzipDirectory } = require("@Wearslot/store-front-app/helpers");
+const { downloadZipFile, unzipDirectory } = require("taojaa-storefront/helpers");
 
 const clone = (type, options) => {
     const credentials = getDeveloperCredentials();

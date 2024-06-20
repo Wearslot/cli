@@ -29,6 +29,7 @@ program
     .option('--name <name>', 'To specify the theme name.')
     .option('--store <store>', 'The name of the development store.')
     .option('--version <version>', 'To specify a new version release.')
+    .option('--unpublished', 'Theme won\'t be set as active theme on store after push.')
     .action(actions)
 
 program

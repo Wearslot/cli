@@ -23,16 +23,16 @@ const auth = async ({ accesstoken, secretkey }) => {
 
         if (response.data.success) {
             const path = require('path');
-            fs.writeFileSync(path.join(__dirname, '.credentials'), `ACCESS_TOKEN=${accessToken}\nSECRET_KEY=${secretKey}`);
+            fs.writeFileSync('.credentials', `ACCESS_TOKEN=${accessToken}\nSECRET_KEY=${secretKey}`);
             return console.log(chalk.bold.green(response.data.message));
         }
 
     } catch (error) {
-        if (error.response.status === 500) {
+        if (error.response?.status === 500) {
             return console.log(chalk.bold.red('Authentication failed, error occured on the server'));
         }
 
-        if (error.response.status === 400) {
+        if (error.response?.status === 400) {
             return console.log(chalk.bold.red(error.response.data.message));
         }
 

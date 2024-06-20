@@ -3,7 +3,7 @@ const path = require('path');
 const axios = require('axios');
 const chalk = require('chalk');
 const formData = require('form-data');
-const { zipDirectory } = require('@Wearslot/store-front-app/helpers');
+const { zipDirectory } = require('taojaa-storefront/helpers');
 const { copyThemeFile, getDeveloperCredentials } = require('../helpers');
 const { downloadTheme } = require('./clone');
 
@@ -97,7 +97,7 @@ const pushToStore = async (options, credentials) => {
                 if (theme.id === undefined) {
                     theme.id = response.data.theme.id;
 
-                    fs.writeFileSync(path.join(wkdir, 'theme.json'), JSON.stringify(theme))
+                    fs.writeFileSync(path.join(wkdir, 'theme.json'), JSON.stringify(theme, undefined, 2))
                 }
             }
             console.log(chalk.green.bold('Theme pushed successfully'));

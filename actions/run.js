@@ -66,7 +66,7 @@ const runProject = async (dev, { store, port }) => {
     }
 
 
-    const app = require('@Wearslot/store-front-app');
+    const app = require('taojaa-storefront');
 
     app.listen(process.env.THEME_PORT, () => {
         console.log(chalk.green.bold(`\nAccess on local @ http://127.0.0.1:${process.env.THEME_PORT}`));

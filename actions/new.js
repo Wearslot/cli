@@ -1,7 +1,3 @@
-// import chalk from "chalk";
-// import shell from 'shelljs';
-// import path from 'path';
-
 const path = require('path');
 const shell = require('shelljs');
 const chalk = require("chalk");
