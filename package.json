@@ -21,6 +21,6 @@
     "node-fetch": "^2.7.0",
     "prompt-sync": "^4.2.0",
     "shelljs": "^0.8.5",
-    "taojaa-storefront": "^0.1.2"
+    "taojaa-storefront": "^0.1.3"
   }
 }
