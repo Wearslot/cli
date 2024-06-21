@@ -19,18 +19,28 @@ const runProject = async (dev, { store, port }) => {
         store_url = store + '.taojaa.shop'
     }
 
+    /** 
+     * Configures port to run the app and if port not available 
+     * it switches to default - 2157
+    */
     const PORT = port !== undefined ? port : 2157;
 
-    process.env["STORE_DOMAIN"] = store_url;
-    process.env["THEME_PORT"] = PORT;
-    process.env["THEME_DIR"] = process.cwd();
-    process.env["THEMES_ENDPOINT"] = 'https://themes-service-prod.taojaa.com/api/v1';
-    process.env["STORE_SERVICE_ENDPOINT"] = 'https://storefront-service-prod.taojaa.com/api/v1';
-    process.env["MARKETING_SERVICE"] = 'https://marketing-service-prod.taoaa.com';
-    process.env["SECURE_CHECKOUT_ENDPOINT"] = 'https://secure-checkout-prod.taojaa.com/api/v1';
-    process.env["STORE_MANAGER_ENDPOINT"] = 'https://store-manager-production.taojaa.com/api/v1';
-    process.env['MAILTRAP_USERNAME'] = 'api';
-    process.env['MAILTRAP_PASSWORD'] = '67dc695fd9358c1b3a336b17548eaac0';
+    /**
+     * List of required enviroment variables names with
+     * their values 
+     */
+    const envs = {
+        "STORE_DOMAIN": store_url,
+        "THEME_PORT": PORT,
+        "THEME_DIR": process.cwd(),
+        "THEMES_ENDPOINT": 'https://themes-service-prod.taojaa.com/api/v1',
+        "STORE_SERVICE_ENDPOINT": 'https://storefront-service-prod.taojaa.com/api/v1',
+        "MARKETING_SERVICE": 'https://marketing-service-prod.taoaa.com',
+        "SECURE_CHECKOUT_ENDPOINT": 'https://secure-checkout-prod.taojaa.com/api/v1',
+        "STORE_MANAGER_ENDPOINT": 'https://store-manager-production.taojaa.com/api/v1',
+        'MAILTRAP_USERNAME': 'api',
+        'MAILTRAP_PASSWORD': '67dc695fd9358c1b3a336b17548eaac0'
+    }
 
     if (store_url === undefined) {
         return console.log("Error, kindly provide development store name");
@@ -48,6 +58,19 @@ const runProject = async (dev, { store, port }) => {
                 ...credentials
             }
         });
+
+
+        /**
+         * Set all enviroments variables after access 
+         * has been validated.
+         */
+        for (const key in envs) {
+            if (Object.hasOwnProperty.call(envs, key)) {
+                process.env[key] = envs[key];
+
+            }
+        }
+        process.env['AUTH_SECRET_KEY'] = credentials.SECRET_KEY;
 
     } catch (error) {
         if (error.response) {

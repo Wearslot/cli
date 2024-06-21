@@ -3,8 +3,7 @@ const path = require('path');
 const axios = require('axios');
 const chalk = require('chalk');
 const formData = require('form-data');
-const { zipDirectory } = require('taojaa-storefront/helpers');
-const { copyThemeFile, getDeveloperCredentials } = require('../helpers');
+const { copyThemeFile, getDeveloperCredentials, zipDirectory } = require('../helpers');
 const { downloadTheme } = require('./clone');
 
 

@@ -1,8 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const chalk = require("chalk");
-const { getDeveloperCredentials } = require("../helpers");
-const { downloadZipFile, unzipDirectory } = require("taojaa-storefront/helpers");
+const { getDeveloperCredentials, downloadZipFile, unzipDirectory } = require("../helpers");
 
 const clone = (type, options) => {
     const credentials = getDeveloperCredentials();
@@ -80,8 +79,8 @@ const downloadTheme = async (options, credentials, pull = false) => {
         }
 
         return pull
-        ? console.log(chalk.green.bold('Theme updates pulled successfully'))
-        : console.log(chalk.green.bold('Theme cloned successfully'));
+            ? console.log(chalk.green.bold('Theme updates pulled successfully'))
+            : console.log(chalk.green.bold('Theme cloned successfully'));
 
     } catch (error) {
         if (error.response) {
