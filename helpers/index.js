@@ -46,7 +46,6 @@ async function downloadZipFile(url, outputPath, options = {}) {
         // Check if the request was successful
         if (!response.ok) {
             const data = await response.json();
-            logger.info("Response Body: ", data);
 
             const error = new Error(`Unexpected response ${response.statusText}`);
             error.response = data;
