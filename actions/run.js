@@ -16,6 +16,10 @@ const runProject = async (dev, { store, port }) => {
         const theme = JSON.parse(fs.readFileSync(path.join(wkdir, 'theme.json'), 'utf8'));
         store_url = theme.store;
     } else {
+        if(store === undefined) {
+            return console.log(chalk.blue.bold('Development store is required!'));
+        }
+
         store_url = store + '.taojaa.shop'
     }
 

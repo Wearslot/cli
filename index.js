@@ -1,10 +1,13 @@
 #! /usr/bin/env node
+const process = require('process');
 const { program } = require('commander');
 const { runProject } = require('./actions/run');
 const { createProject } = require('./actions/new');
 const actions = require('./actions/actions');
 const auth = require('./actions/auth');
 const { clone } = require('./actions/clone');
+
+process.removeAllListeners('warning');
 
 process.env["APP_ENV"] = "cli";
 process.env['AUTH_SERVER_URL'] = 'https://auth-service-prod.taojaa.com';
