@@ -1,9 +1,10 @@
 const fs = require('fs');
+const path = require('path');
 const chalk = require('chalk');
 const axios = require('axios');
 const prompt = require('prompt-sync')({ sigint: true });
 
-const auth = async ({ accesstoken, secretkey }) => {
+exports.auth = async ({ accesstoken, secretkey }) => {
 
     const accessToken = accesstoken || prompt('Enter Access Token: ')
     const secretKey = secretkey || prompt('Enter Secret Key: ')
@@ -40,4 +41,17 @@ const auth = async ({ accesstoken, secretkey }) => {
     }
 }
 
-module.exports = auth;
+exports.getDeveloperCredentials = () => {
+
+    if (!fs.existsSync(path.join(__dirname, '/../actions/.credentials'))) return false;
+
+    var credentials = {};
+
+    var credentials_file = fs.readFileSync(path.join(__dirname, '/../actions/.credentials'), 'utf8');
+    credentials_file.split('\n').map(keyvalue => {
+        keyvalue = keyvalue.split('=');
+        credentials[keyvalue[0]] = keyvalue[1];
+    });
+
+    return credentials;
+}

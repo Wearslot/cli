@@ -3,32 +3,35 @@ const path = require('path');
 const AdmZip = require('adm-zip');
 const fetch = require('node-fetch');
 
-async function copyThemeFile(src, dest) {
+
+exports.copyThemeFile = async (src, dest) => {
     const stat = fs.statSync(src);
 
     if (stat.isDirectory()) {
         fs.mkdirSync(dest, { recursive: true });
-        const entries = await fs.readdirSync(src, { withFileTypes: true });
+        const entries = fs.readdirSync(src, { withFileTypes: true });
         await Promise.all(entries.map(entry => {
             const srcPath = path.join(src, entry.name);
             const destPath = path.join(dest, entry.name);
             if (srcPath.indexOf('.git') > -1) {
                 return;
             }
-            return copyThemeFile(srcPath, destPath);
+            return this.copyThemeFile(srcPath, destPath);
         }));
     } else {
         fs.copyFileSync(src, dest);
     }
 }
 
-const zipDirectory = async (sourceDir, outputFilePath) => {
+
+exports.zipDirectory = async (sourceDir, outputFilePath) => {
     const zip = new AdmZip();
     zip.addLocalFolder(sourceDir);
     await zip.writeZipPromise(outputFilePath);
 };
 
-const unzipDirectory = async (inputFilePath, outputDirectory) => {
+
+exports.unzipDirectory = async (inputFilePath, outputDirectory) => {
     const zip = new AdmZip(inputFilePath);
     return zip.extractAllToAsync(outputDirectory, true, (error) => {
         if (error) {
@@ -39,7 +42,7 @@ const unzipDirectory = async (inputFilePath, outputDirectory) => {
 };
 
 
-async function downloadZipFile(url, outputPath, options = {}) {
+exports.downloadZipFile = async (url, outputPath, options = {}) => {
     try {
         // Make a GET request to the URL
         const response = await fetch(url, options);
@@ -67,28 +70,4 @@ async function downloadZipFile(url, outputPath, options = {}) {
     } catch (error) {
         throw error;
     }
-}
-
-
-const getDeveloperCredentials = () => {
-
-    if (!fs.existsSync(path.join(__dirname, '/../actions/.credentials'))) return false;
-
-    var credentials = {};
-
-    var credentials_file = fs.readFileSync(path.join(__dirname, '/../actions/.credentials'), 'utf8');
-    credentials_file.split('\n').map(keyvalue => {
-        keyvalue = keyvalue.split('=');
-        credentials[keyvalue[0]] = keyvalue[1];
-    });
-
-    return credentials;
-}
-
-module.exports = {
-    copyThemeFile,
-    unzipDirectory,
-    zipDirectory,
-    downloadZipFile,
-    getDeveloperCredentials
 }
