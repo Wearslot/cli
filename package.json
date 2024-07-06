@@ -23,6 +23,6 @@
     "shelljs": "^0.8.5"
   },
   "devDependencies": {
-    "taojaa-storefront": "^0.1.5"
+    "taojaa-storefront": "^0.1.7"
   }
 }
