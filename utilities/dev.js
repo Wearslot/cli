@@ -9,9 +9,10 @@ const startDevServer = (ctx, credentials) => {
 
     process.env = {
         ...process.env,
-        THEME_DIR: ctx.dir,
+        THEME_DIR: `${ctx.dir}/`,
         TAOJAA_STOREFRONT_API: 'https://storefront-service-prod.taojaa.com/api/v1',
-        AUTH_SECRET_KEY: credentials.SECRET_KEY
+        AUTH_SECRET_KEY: credentials.SECRET_KEY,
+        STORE_DOMAIN: `${ctx.theme.store}.taojaa.shop`
     }
 
     const app = require('taojaa-storefront');
