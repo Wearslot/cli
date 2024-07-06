@@ -3,7 +3,7 @@ const shell = require('shelljs');
 const chalk = require("chalk");
 
 
-const createProject = (type, name) => {
+exports.init = (type, name) => {
     if (type === "theme") {
         createThemeProject(name);
     } else if (type === "app") {
@@ -38,9 +38,4 @@ function createThemeProject(name) {
     console.log(chalk.white('To start the app:'));
     console.log('');
     console.log(chalk.bold.blue('taojaa') + ' ' + chalk.white('run dev --store <name>'));
-}
-
-
-module.exports = {
-    createProject
 }

@@ -1,31 +1,21 @@
 #! /usr/bin/env node
 const process = require('process');
 const { program } = require('commander');
-const { runProject } = require('./actions/run');
-const { createProject } = require('./actions/new');
-const actions = require('./actions/actions');
-const auth = require('./actions/auth');
+const { init } = require('./actions/init');
+const { actions } = require('./actions/actions');
+const { auth } = require('./actions/auth');
 const { clone } = require('./actions/clone');
 
 process.removeAllListeners('warning');
 
-process.env["APP_ENV"] = "cli";
+process.env['APP_ENV'] = "development";
 process.env['AUTH_SERVER_URL'] = 'https://auth-service-prod.taojaa.com';
 process.env['THEME_SERVER_URL'] = 'https://themes-service-prod.taojaa.com';
 
 program
-    .command('new <type> <name>')
+    .command('init <type> <name>')
     .description('Initialize new project')
-    .action(createProject);
-
-
-program
-    .command('run dev')
-    .description('Run the project')
-    .option('--store <name>', 'The name of the development store.')
-    .option('--port <port>', 'Specify port to run theme on local')
-    .action(runProject)
-
+    .action(init);
 
 program
     .command('theme <action>')
@@ -33,7 +23,7 @@ program
     .option('--name <name>', 'To specify the theme name.')
     .option('--store <store>', 'The name of the development store.')
     .option('--version <version>', 'To specify a new version release.')
-    .option('--unpublished', 'Theme won\'t be set as active theme on store after push.')
+    .option('--publish', 'To set theme as default store theme after push.')
     .action(actions)
 
 program
