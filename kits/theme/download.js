@@ -7,8 +7,8 @@ exports.downloadTheme = async (ctx, credentials, pull = false) => {
 
     if (ctx.output === true) {
         pull
-            ? console.log(chalk.blue.bold(`Pulling ${ctx.name} from ${ctx.store} ....`))
-            : console.log(chalk.blue.bold(`Cloning ${ctx.name} from ${ctx.store} ....`));
+            ? console.log(chalk.blue.bold(`Pulling ${ctx.theme.name} from ${ctx.theme.store} ....`))
+            : console.log(chalk.blue.bold(`Cloning ${ctx.theme.name} from ${ctx.theme.store} ....`));
     }
 
     try {
@@ -20,10 +20,10 @@ exports.downloadTheme = async (ctx, credentials, pull = false) => {
                 'Accept': 'application/json',
                 ...credentials
             },
-            body: JSON.stringify(ctx)
+            body: JSON.stringify(ctx.theme)
         }
 
-        var finalDir = pull ? `${ctx.dir}` : `${ctx.dir}/${ctx.name.replaceAll(' ', '-').toLowerCase()}/`;
+        var finalDir = pull ? `${ctx.dir}` : `${ctx.dir}/${ctx.theme.name.replaceAll(' ', '-').toLowerCase()}/`;
 
         const outputPath = path.join(__dirname, 'theme.zip');
         await downloadZipFile(`${process.env.THEME_SERVER_URL}/api/v1/download/theme`, outputPath, reqData)

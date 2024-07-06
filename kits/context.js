@@ -2,22 +2,24 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require("chalk");
 
-exports.createContext = (options) => {
+exports.createContext = (options, use_theme_file = true) => {
 
     var context = {
         dir: process.cwd(),
-        theme: null,
+        theme: {},
         output: true
     };
 
-    const filepath = path.join(context.dir, 'theme.json')
-
-    if (fs.existsSync(filepath)) {
-        context.theme = JSON.parse(fs.readFileSync(filepath, 'utf8'));
+    if(use_theme_file) {
+        const filepath = path.join(context.dir, 'theme.json')
+    
+        if (fs.existsSync(filepath)) {
+            context.theme = JSON.parse(fs.readFileSync(filepath, 'utf8'));
+        }
     }
 
     for (const key in options) {
-        if (['store', 'name', 'version'].includes(key)) {
+        if (['store', 'name', 'version', 'publish'].includes(key)) {
             context.theme[key] = options[key];
         }
     }

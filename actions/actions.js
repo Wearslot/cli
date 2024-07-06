@@ -1,9 +1,9 @@
 const chalk = require('chalk');
-const { downloadTheme } = require('./clone');
 const { uploadTheme } = require('../kits/theme/upload');
 const { createContext } = require('../kits/context');
 const { runTheme } = require('../kits/theme/run');
 const { getDeveloperCredentials } = require('./auth');
+const { downloadTheme } = require('../kits/theme/download');
 
 
 exports.actions = (action, options) => {
