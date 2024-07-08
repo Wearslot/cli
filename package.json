@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production && cp package.json build/"
   },
   "bin": {
     "taojaa": "./index.js"
@@ -23,6 +24,12 @@
     "shelljs": "^0.8.5"
   },
   "devDependencies": {
-    "taojaa-storefront": "^0.1.7"
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "babel-loader": "^9.1.3",
+    "taojaa-storefront": "^0.1.9",
+    "webpack": "^5.92.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0"
   }
 }

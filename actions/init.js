@@ -37,5 +37,5 @@ function createThemeProject(name) {
     console.log(chalk.white('Start building amazing e-commerce experience.\n'));
     console.log(chalk.white('To start the app:'));
     console.log('');
-    console.log(chalk.bold.blue('taojaa') + ' ' + chalk.white('run dev --store <name>'));
+    console.log(chalk.bold.blue('taojaa') + ' ' + chalk.white('theme dev --store <name>'));
 }
