@@ -11,6 +11,11 @@ const startDevServer = (ctx, credentials) => {
         ...process.env,
 
         /**
+         * Set environment to development
+        */
+        APP_ENV: "development",
+
+        /**
          * Adding app PORT environtment
         */
         PORT: ctx.port,
