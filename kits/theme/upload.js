@@ -9,10 +9,6 @@ exports.uploadTheme = async (ctx, credentials) => {
 
     var base_path = path.basename(ctx.dir);
 
-    if (!fs.existsSync(path.join(ctx.dir, 'components'))) {
-        return console.log(chalk.red.bold('Not a valid theme directory'));
-    }
-
     ctx.output && console.log(chalk.blue.bold('Bundling theme............'));
 
     const fullpath = path.join(__dirname, `${base_path}`);
