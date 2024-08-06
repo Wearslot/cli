@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const shell = require('shelljs');
 const chalk = require("chalk");
@@ -28,6 +29,17 @@ function createThemeProject(name) {
      * */
     shell.cd(path.join(directory, name));
     shell.rm('-rf', '.git');
+
+    const baseDir = `${directory}/${name}`;
+
+    if (fs.existsSync(baseDir)) {
+        const theme = {
+            name,
+            store: "",
+            version: "1.0.0"
+        };
+        fs.writeFileSync(path.join(baseDir, 'theme.json'), JSON.stringify(theme, undefined, 2))
+    }
 
     /**
      * Upon clone success out success message

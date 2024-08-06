@@ -1,3 +1,4 @@
+const fs = require('fs');
 const chalk = require('chalk');
 const { uploadTheme } = require('../kits/theme/upload');
 const { createContext } = require('../kits/context');
@@ -7,6 +8,10 @@ const { downloadTheme } = require('../kits/theme/download');
 
 
 exports.actions = (action, options) => {
+
+    if (!fs.existsSync('theme.json')) {
+        return console.log(chalk.red.bold('Not a valid theme directory'));
+    }
 
     const credentials = getDeveloperCredentials();
     if (!credentials) {
