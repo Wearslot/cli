@@ -31,6 +31,9 @@ exports.actions = (action, options) => {
             case 'dev':
                 return runTheme(context, options, credentials);
 
+            case 'publish': 
+                return uploadTheme(context, credentials, 'publish');
+
             default:
                 return console.log(chalk.blue.bold(`Unindefined action or command ${action}`));
         }

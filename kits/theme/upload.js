@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const formData = require('form-data');
 const { copyThemeFile, zipDirectory } = require('..');
 
-exports.uploadTheme = async (ctx, credentials) => {
+exports.uploadTheme = async (ctx, credentials, type = 'push') => {
 
     var base_path = path.basename(ctx.dir);
 
@@ -32,7 +32,7 @@ exports.uploadTheme = async (ctx, credentials) => {
     form.append('theme_file', fileStream);
 
     try {
-        const response = await axios.post(`${process.env.THEME_SERVER_URL}/api/v1/push/theme`, form, {
+        const response = await axios.post(`${process.env.THEME_SERVER_URL}/api/v1/${type}/theme`, form, {
             headers: {
                 'Accept': 'application/json',
                 ...credentials,
@@ -41,17 +41,21 @@ exports.uploadTheme = async (ctx, credentials) => {
         });
 
         if (response.data.status === 'success') {
-            if (ctx.theme.id === undefined) {
-                ctx.theme.id = response.data.theme.id;
-
-                fs.writeFileSync(path.join(ctx.dir, 'theme.json'), JSON.stringify(ctx.theme, undefined, 2))
+            if(type === 'push') {
+                if (ctx.theme.id === undefined) {
+                    ctx.theme.id = response.data.theme.id;
+    
+                    fs.writeFileSync(path.join(ctx.dir, 'theme.json'), JSON.stringify(ctx.theme, undefined, 2))
+                }
             }
-            ctx.output && console.log(chalk.green.bold('Theme pushed successfully'));
+
+            var message = type === 'push' ? 'Theme pushed successfully' : response.data.message;
+            ctx.output && console.log(chalk.green.bold(message));
         }
 
     } catch (error) {
         if (error.response) {
-            if (error.response.status === 400) {
+            if (error.response.status === 400 || error.response.status === 401) {
                 var message = error.response.data.message;
                 if (message === 'Invalid request') {
                     message = 'Invalid theme upload request';
