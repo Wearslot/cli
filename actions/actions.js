@@ -5,6 +5,7 @@ const { createContext } = require('../kits/context');
 const { runTheme } = require('../kits/theme/run');
 const { getDeveloperCredentials } = require('./auth');
 const { downloadTheme } = require('../kits/theme/download');
+const { validateTheme } = require('../kits/theme/validate');
 
 
 exports.actions = (action, options) => {
@@ -14,8 +15,10 @@ exports.actions = (action, options) => {
     }
 
     const credentials = getDeveloperCredentials();
-    if (!credentials) {
-        return console.log(chalk.bold.red('Authencation required!'));
+    if(action != 'validate') {
+        if (!credentials) {
+            return console.log(chalk.bold.red('Authencation required!'));
+        }
     }
 
     const context = createContext(options);
@@ -31,8 +34,11 @@ exports.actions = (action, options) => {
             case 'dev':
                 return runTheme(context, options, credentials);
 
-            case 'publish': 
+            case 'publish':
                 return uploadTheme(context, credentials, 'publish');
+
+            case 'validate':
+                return validateTheme(context);
 
             default:
                 return console.log(chalk.blue.bold(`Unindefined action or command ${action}`));
