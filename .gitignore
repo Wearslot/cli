@@ -3,3 +3,4 @@
 /actions/*.zip
 /build
 webpack*
+package-lock.json
