@@ -31,6 +31,11 @@ const startDevServer = (ctx, credentials) => {
         TAOJAA_STOREFRONT_API: 'https://storefront-service-prod.taojaa.com/api/v1',
 
         /**
+         * Adding storefront api base url environtment
+        */
+        TAOJAA_BLOG_API: 'https://store-manager-production.taojaa.com/api/v1/blog',
+
+        /**
          * Adding authentication credentials secret to enviroment 
         */
         AUTH_SECRET_KEY: credentials.SECRET_KEY,
