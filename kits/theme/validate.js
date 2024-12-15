@@ -16,10 +16,16 @@ exports.validateTheme = async (ctx) => {
         results.push(validateFile(footer_group, 'footer-group.json', 'sections/', ctx.output))
     }
 
-    const fullpath = path.join(ctx.dir, `/templates`);
-    var response = await validation(fullpath, '', ctx.output);
+    const templates = path.join(ctx.dir, `/templates`);
+    var response1 = await validation(templates, 'templates/', ctx.output);
 
-    results = [...results, ...response];
+    const locales = path.join(ctx.dir, `/locales`);
+    var response2 = await validation(locales, 'locales/', ctx.output);
+
+    const configs = path.join(ctx.dir, `/configs`);
+    var response3 = await validation(configs, 'configs/', ctx.output);
+
+    results = [...results, ...response1, ...response2, ...response3];
 
     const invalid = results.filter((r) => r == false).length;
     const valid = results.length - invalid;
@@ -44,7 +50,7 @@ const validation = async (src, prefix = '', output = true) => {
 
         const stat = fs.statSync(srcPath);
         if (stat.isDirectory()) {
-            validation(srcPath, entry.name + "/", output);
+            validation(srcPath, prefix + entry.name + "/", output);
         } else {
             return validateFile(srcPath, entry.name, prefix, output);
         }
@@ -54,12 +60,12 @@ const validation = async (src, prefix = '', output = true) => {
 const validateFile = (file, name, prefix = '', output = true) => {
     const template = fs.readFileSync(file, 'utf-8');
     if (template == '') {
-        console.log(chalk.red(`${prefix}${name} is not a valid template ❌`));
+        console.log(`${prefix}${name} ........` + chalk.red(` invalid ❌`));
         return false;
     }
 
     if (JSON.parse(template)) {
-        output && console.log(chalk.green(`${prefix}${name} is a valid template ✅`))
+        output && console.log(`${prefix}${name} ........` + chalk.green(` validated ✅`))
     }
 
     return true;
