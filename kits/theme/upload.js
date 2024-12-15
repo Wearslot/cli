@@ -4,12 +4,26 @@ const axios = require('axios');
 const chalk = require('chalk');
 const formData = require('form-data');
 const { copyThemeFile, zipDirectory } = require('..');
+const { validateTheme } = require('./validate');
 
 exports.uploadTheme = async (ctx, credentials, type = 'push') => {
 
     var base_path = path.basename(ctx.dir);
 
-    ctx.output && console.log(chalk.blue.bold('Bundling theme............'));
+    const initialOutput = ctx.output;
+    ctx.output = false;
+
+    const validation = await validateTheme(ctx);
+
+    ctx.output = initialOutput;
+
+    if(!validation) {
+        return;
+    } else {
+        ctx.output && console.log(chalk.green.bold('Validation successful ✅'));
+    }
+
+    ctx.output && console.log(chalk.blue.bold('Bundling theme....'));
 
     const fullpath = path.join(__dirname, `${base_path}`);
 
@@ -19,7 +33,7 @@ exports.uploadTheme = async (ctx, credentials, type = 'push') => {
 
     fs.rmSync(fullpath, { recursive: true, force: true });
 
-    ctx.output && console.log(chalk.blue.bold('Pushing theme to store...'));
+    ctx.output && console.log(chalk.blue.bold('Pushing theme to store....'));
 
     const fileStream = fs.createReadStream(`${fullpath}.zip`);
 
@@ -41,16 +55,16 @@ exports.uploadTheme = async (ctx, credentials, type = 'push') => {
         });
 
         if (response.data.status === 'success') {
-            if(type === 'push') {
+            if (type === 'push') {
                 if (ctx.theme.id === undefined) {
                     ctx.theme.id = response.data.theme.id;
-    
+
                     fs.writeFileSync(path.join(ctx.dir, 'theme.json'), JSON.stringify(ctx.theme, undefined, 2))
                 }
             }
 
             var message = type === 'push' ? 'Theme pushed successfully' : response.data.message;
-            ctx.output && console.log(chalk.green.bold(message));
+            ctx.output && console.log(chalk.green.bold(message + ' ✅'));
         }
 
     } catch (error) {
