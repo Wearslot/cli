@@ -22,7 +22,7 @@
     "node-fetch": "^2.7.0",
     "prompt-sync": "^4.2.0",
     "shelljs": "^0.8.5",
-    "taojaa-storefront": "^0.1.16"
+    "taojaa-storefront": "^0.1.17"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
