@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 const { dev } = require('../../utilities/dev');
 
 exports.runTheme = async (ctx, options, credentials) => {
